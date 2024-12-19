@@ -1,0 +1,37 @@
+name: Build and Deploy Jekyll site
+
+on:
+  push:
+    branches:
+      - main  # Change this to the branch you're using for GitHub Pages
+  pull_request:
+    branches:
+      - main  # Change this to the branch you're using for GitHub Pages
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7  # Change to the Ruby version required for your Jekyll site
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Build the Jekyll site
+        run: |
+          bundle exec jekyll build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_dir: ./_site  # This is where Jekyll outputs the built site
+          github_token: ${{ secrets.GITHUB_TOKEN }}
